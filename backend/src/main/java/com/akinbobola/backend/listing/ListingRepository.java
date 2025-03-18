@@ -10,7 +10,7 @@ public interface ListingRepository extends JpaRepository <Listing, Integer> {
     @Query("""
             select listing
             from Listing listing
-            where listing.user.id = :agentId
+            where listing.agent.id = :agentId
             """)
     Page<Listing> findByAgentId (Integer agentId, Pageable pageRequest);
 }
