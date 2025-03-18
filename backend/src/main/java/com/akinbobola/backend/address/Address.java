@@ -36,7 +36,7 @@ public class Address {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime dateListed;
+    private LocalDateTime createdDate;
 
     @LastModifiedDate
     @Column(insertable = false)

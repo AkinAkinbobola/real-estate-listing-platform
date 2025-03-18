@@ -3,7 +3,6 @@ package com.akinbobola.backend.listing;
 import com.akinbobola.backend.address.Address;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
