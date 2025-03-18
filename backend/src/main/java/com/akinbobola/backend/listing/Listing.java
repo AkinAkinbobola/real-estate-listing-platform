@@ -4,6 +4,7 @@ package com.akinbobola.backend.listing;
 import com.akinbobola.backend.address.Address;
 import com.akinbobola.backend.common.BaseEntity;
 import com.akinbobola.backend.user.User;
+import com.akinbobola.backend.viewing.Viewing;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,11 +41,14 @@ public class Listing extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SizeUnit sizeUnit;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "agent_id", nullable = false)
     private User agent;
+
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    private List <Viewing> viewings;
 }

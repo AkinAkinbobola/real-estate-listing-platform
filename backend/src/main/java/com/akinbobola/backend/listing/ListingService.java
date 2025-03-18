@@ -1,6 +1,7 @@
 package com.akinbobola.backend.listing;
 
 import com.akinbobola.backend.address.Address;
+import com.akinbobola.backend.address.AddressRepository;
 import com.akinbobola.backend.common.PageResponse;
 import com.akinbobola.backend.exceptions.OperationNotPermittedException;
 import com.akinbobola.backend.user.User;
@@ -26,6 +27,7 @@ public class ListingService {
     private final ListingRepository listingRepository;
     private final ListingMapper listingMapper;
     private final UserRepository userRepository;
+    private final AddressRepository addressRepository;
 
     public Integer saveListing (ListingRequest request, Authentication connectedUser) {
         User authenticatedUser = (User) connectedUser.getPrincipal();
@@ -40,8 +42,10 @@ public class ListingService {
                 .postalCode(request.postalCode())
                 .build();
 
+        Address savedAddress = addressRepository.save(address);
+
         Listing listing = listingMapper.toListing(request);
-        listing.setAddress(address);
+        listing.setAddress(savedAddress);
         listing.setAgent(user);
 
         return listingRepository.save(listing).getId();
