@@ -1,7 +1,9 @@
 package com.akinbobola.backend.security;
 
+import com.akinbobola.backend.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.function.Function;
 
 @Service
@@ -54,4 +57,21 @@ public class JwtService {
         return extractClaim(jwtToken, Claims::getExpiration);
     }
 
+    public String generateToken (UserDetails userDetails) {
+        return generateToken(new HashMap <>(), userDetails);
+    }
+
+    public String generateToken (HashMap <String, Object> extraClaims, UserDetails user) {
+        return buildToken(extraClaims, user, jwtExpiration);
+    }
+
+    private String buildToken (HashMap <String, Object> extraClaims, UserDetails user, Long jwtExpiration) {
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(user.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
 }

@@ -24,10 +24,17 @@ public class AuthenticationController {
 
     @PostMapping("/register-user")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<?> registerUser(
+    public ResponseEntity <?> registerUser (
             @Valid @RequestBody RegistrationRequest request
     ) {
         authenticationService.registerUser(request, "USER");
         return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity <AuthenticationResponse> authenticate (
+            @Valid @RequestBody AuthenticationRequest request
+    ) {
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }
