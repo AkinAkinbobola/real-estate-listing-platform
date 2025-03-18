@@ -42,7 +42,7 @@ public class User implements UserDetails, Principal {
 
     private boolean enabled;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List <Role> roles;
 
     @CreatedDate

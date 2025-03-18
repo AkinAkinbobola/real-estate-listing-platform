@@ -43,6 +43,9 @@ public class SecurityConfig {
                                         "/swagger-ui.html"
                                 )
                                 .permitAll()
+                                .requestMatchers(
+                                        "/listings/**"
+                                ).hasAuthority("AGENT")
                                 .anyRequest()
                                 .authenticated()
                 )

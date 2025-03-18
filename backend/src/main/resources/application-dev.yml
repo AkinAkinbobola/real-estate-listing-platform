@@ -35,3 +35,9 @@ application:
     jwt:
       secret-key: 21bf9b7af0edd35e26688a35d68e4aa308d26b21d54316f06d9a361be47a42d5ac7c2886f169296ba8bc1bc8349bf7428b8edf25159ef9e62df936ec18dff6a5
       expiration-time: 86400000
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
