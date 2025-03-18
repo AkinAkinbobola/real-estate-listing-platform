@@ -2,30 +2,24 @@ package com.akinbobola.backend.listing;
 
 
 import com.akinbobola.backend.address.Address;
+import com.akinbobola.backend.common.BaseEntity;
 import com.akinbobola.backend.user.User;
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Listing {
-
-    @Id
-    @GeneratedValue
-    private Integer id;
+public class Listing extends BaseEntity {
 
     private String title;
 
@@ -52,20 +46,4 @@ public class Listing {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "agent_id", nullable = false)
     private User agent;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime dateListed;
-
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime lastModifiedDate;
-
-    @CreatedBy
-    @Column(nullable = false, updatable = false)
-    private Integer createdBy;
-
-    @LastModifiedBy
-    @Column(insertable = false)
-    private Integer lastModifiedBy;
 }

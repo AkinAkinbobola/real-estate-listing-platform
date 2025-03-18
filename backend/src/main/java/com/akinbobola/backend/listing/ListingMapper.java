@@ -26,7 +26,7 @@ public class ListingMapper {
                                 .postalCode(listing.getAddress().getPostalCode())
                                 .build()
                 )
-                .dateListed(listing.getDateListed())
+                .dateListed(listing.getCreatedDate())
                 .createdBy(listing.getAgent().getEmail())
                 .build();
     }

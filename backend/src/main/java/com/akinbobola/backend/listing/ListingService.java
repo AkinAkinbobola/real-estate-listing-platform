@@ -51,7 +51,7 @@ public class ListingService {
             Authentication connectedUser
     ) {
         User user = (User) connectedUser.getPrincipal();
-        Pageable pageRequest = PageRequest.of(page, size, Sort.by("dateListed").descending());
+        Pageable pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
         Page <Listing> allListings = listingRepository.findByAgentId(user.getId(), pageRequest);
 
