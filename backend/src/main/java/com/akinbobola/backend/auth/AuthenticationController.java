@@ -13,7 +13,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/register-agent")
+    @PostMapping("/register/agent")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity <?> registerAgent (
             @Valid @RequestBody RegistrationRequest request
@@ -22,7 +22,7 @@ public class AuthenticationController {
         return ResponseEntity.accepted().build();
     }
 
-    @PostMapping("/register-user")
+    @PostMapping("/register/user")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity <?> registerUser (
             @Valid @RequestBody RegistrationRequest request
@@ -31,7 +31,7 @@ public class AuthenticationController {
         return ResponseEntity.accepted().build();
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity <AuthenticationResponse> authenticate (
             @Valid @RequestBody AuthenticationRequest request
     ) {
