@@ -1,5 +1,7 @@
 package com.akinbobola.backend.viewing;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,4 +23,20 @@ public interface ViewingRepository extends JpaRepository <Viewing, Integer> {
                 )
             """)
     boolean viewingTimesOverlap (Integer listingId, Integer agentId, LocalDate date, LocalTime startTime, LocalTime endTime);
+
+    @Query("""
+            select v
+            from Viewing v
+            where v.listing.id = :listingId
+            and v.agent.id = :agentId
+            """)
+    Page<Viewing> findByListingId (Integer listingId, Integer agentId, Pageable pageRequest);
+
+    @Query("""
+            select count (v) > 0
+            from Viewing v
+            where v.listing.id = :listingId
+            and v.id = :viewingId
+            """)
+    boolean existsByListingIdAndViewingId (Integer listingId, Integer viewingId);
 }

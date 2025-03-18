@@ -9,6 +9,7 @@ import com.akinbobola.backend.user.UserRepository;
 import com.akinbobola.backend.viewing.Viewing;
 import com.akinbobola.backend.viewing.ViewingMapper;
 import com.akinbobola.backend.viewing.ViewingRepository;
+import com.akinbobola.backend.viewing.ViewingResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -126,5 +127,65 @@ public class ListingService {
         viewing.setListing(listing);
 
         return viewingRepository.save(viewing).getId();
+    }
+
+    public PageResponse <ViewingResponse> getViewings (
+            Integer listingId,
+            Integer page,
+            Integer size,
+            Authentication connectedUser
+    ) {
+        User user = (User) connectedUser.getPrincipal();
+
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> new EntityNotFoundException("Listing id " + listingId + " not found"));
+
+        if (!Objects.equals(listing.getAgent().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not permitted to view viewings for this listing");
+        }
+
+        Pageable pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        Page <Viewing> viewings = viewingRepository.findByListingId(listingId, user.getId(), pageRequest);
+
+        List <ViewingResponse> viewingResponses = viewings.stream()
+                .map(viewingMapper::toViewingResponse)
+                .toList();
+
+        return new PageResponse <>(
+                viewingResponses,
+                viewings.getNumber(),
+                viewings.getSize(),
+                viewings.getTotalElements(),
+                viewings.getTotalPages(),
+                viewings.isFirst(),
+                viewings.isLast()
+        );
+    }
+
+    public void deleteViewing (
+            Integer listingId,
+            Integer viewingId,
+            Authentication connectedUser
+    ) {
+        User user = (User) connectedUser.getPrincipal();
+
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> new EntityNotFoundException("Listing id " + listingId + " not found"));
+
+        if (!Objects.equals(listing.getAgent().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not permitted to delete viewings for this listing");
+        }
+
+        Viewing viewing = viewingRepository.findById(viewingId)
+                .orElseThrow(() -> new EntityNotFoundException("Viewing id " + viewingId + " not found"));
+
+        boolean existsByListingIdAndViewingId = viewingRepository.existsByListingIdAndViewingId(listingId, viewingId);
+
+        if (!existsByListingIdAndViewingId) {
+            throw new EntityNotFoundException("Viewing id " + viewingId + " not found for listing id " + listingId);
+        }
+
+        viewingRepository.delete(viewing);
     }
 }
