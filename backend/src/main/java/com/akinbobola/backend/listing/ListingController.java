@@ -30,4 +30,13 @@ public class ListingController {
     ) {
         return ResponseEntity.ok(service.getListings(page, size, connectedUser));
     }
+
+    @DeleteMapping("/{listing-id}")
+    public ResponseEntity <Integer> deleteListing (
+            @PathVariable(name = "listing-id") Integer listingId,
+            Authentication connectedUser
+    ) {
+        service.deleteListing(listingId, connectedUser);
+        return ResponseEntity.ok().build();
+    }
 }

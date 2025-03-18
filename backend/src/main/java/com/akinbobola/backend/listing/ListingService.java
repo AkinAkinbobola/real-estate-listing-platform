@@ -2,6 +2,7 @@ package com.akinbobola.backend.listing;
 
 import com.akinbobola.backend.address.Address;
 import com.akinbobola.backend.common.PageResponse;
+import com.akinbobola.backend.exceptions.OperationNotPermittedException;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -68,5 +70,18 @@ public class ListingService {
                 allListings.isFirst(),
                 allListings.isLast()
         );
+    }
+
+    public void deleteListing (Integer listingId, Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> new EntityNotFoundException("Listing id " + listingId + " not found"));
+
+        if (!Objects.equals(listing.getAgent().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not permitted to delete this listing");
+        }
+
+        listingRepository.delete(listing);
     }
 }

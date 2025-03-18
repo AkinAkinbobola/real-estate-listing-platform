@@ -39,11 +39,11 @@ public class Listing extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SizeUnit sizeUnit;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "agent_id", nullable = false)
     private User agent;
 }
