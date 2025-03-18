@@ -6,7 +6,11 @@ import com.akinbobola.backend.common.PageResponse;
 import com.akinbobola.backend.exceptions.OperationNotPermittedException;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.user.UserRepository;
+import com.akinbobola.backend.viewing.Viewing;
+import com.akinbobola.backend.viewing.ViewingMapper;
+import com.akinbobola.backend.viewing.ViewingRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +32,8 @@ public class ListingService {
     private final ListingMapper listingMapper;
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final ViewingMapper viewingMapper;
+    private final ViewingRepository viewingRepository;
 
     public Integer saveListing (ListingRequest request, Authentication connectedUser) {
         User authenticatedUser = (User) connectedUser.getPrincipal();
@@ -87,5 +93,38 @@ public class ListingService {
         }
 
         listingRepository.delete(listing);
+    }
+
+    public Integer saveViewing (
+            Integer listingId,
+            @Valid ViewingRequest request,
+            Authentication connectedUser
+    ) {
+        User user = (User) connectedUser.getPrincipal();
+
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> new EntityNotFoundException("Listing id " + listingId + " not found"));
+
+        if (!Objects.equals(listing.getAgent().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not permitted to create a viewing for this listing");
+        }
+
+        boolean viewingTimesOverlap = viewingRepository.viewingTimesOverlap(
+                listingId,
+                user.getId(),
+                request.date(),
+                request.startTime(),
+                request.endTime()
+        );
+
+        if (viewingTimesOverlap) {
+            throw new OperationNotPermittedException("A viewing already exists for this time slot.");
+        }
+
+        Viewing viewing = viewingMapper.toViewing(request);
+        viewing.setAgent(user);
+        viewing.setListing(listing);
+
+        return viewingRepository.save(viewing).getId();
     }
 }

@@ -39,4 +39,13 @@ public class ListingController {
         service.deleteListing(listingId, connectedUser);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{listing-id}/viewings")
+    public ResponseEntity <Integer> saveViewing (
+            @PathVariable(name = "listing-id") Integer listingId,
+            @Valid @RequestBody ViewingRequest request,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity.ok(service.saveViewing(listingId, request, connectedUser));
+    }
 }
