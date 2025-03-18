@@ -1,5 +1,6 @@
 package com.akinbobola.backend.user;
 
+import com.akinbobola.backend.listing.Listing;
 import com.akinbobola.backend.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +42,9 @@ public class User implements UserDetails, Principal {
     private boolean accountLocked;
 
     private boolean enabled;
+
+    @OneToMany(mappedBy = "agent")
+    private List<Listing> listings;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List <Role> roles;

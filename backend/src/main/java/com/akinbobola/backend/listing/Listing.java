@@ -2,6 +2,7 @@ package com.akinbobola.backend.listing;
 
 
 import com.akinbobola.backend.address.Address;
+import com.akinbobola.backend.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
@@ -47,6 +48,10 @@ public class Listing {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "agent_id", nullable = false)
+    private User agent;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
