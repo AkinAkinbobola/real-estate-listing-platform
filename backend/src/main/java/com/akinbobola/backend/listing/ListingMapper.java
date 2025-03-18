@@ -1,12 +1,18 @@
 package com.akinbobola.backend.listing;
 
 import com.akinbobola.backend.address.AddressResponse;
+import com.akinbobola.backend.viewing.ViewingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ListingMapper {
+    private final ViewingMapper viewingMapper;
+
     public ListingResponse toListingResponse (Listing listing) {
         return ListingResponse.builder()
                 .id(listing.getId())
@@ -25,6 +31,11 @@ public class ListingMapper {
                                 .state(listing.getAddress().getState())
                                 .postalCode(listing.getAddress().getPostalCode())
                                 .build()
+                )
+                .viewings(
+                        Optional.ofNullable(listing.getViewings())
+                                .map(viewingMapper::toViewingResponseList)
+                                .orElse(Collections.emptyList())
                 )
                 .dateListed(listing.getCreatedDate())
                 .createdBy(listing.getAgent().getEmail())
