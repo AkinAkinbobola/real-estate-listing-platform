@@ -23,7 +23,8 @@ public class BeansConfig {
         return authenticationProvider;
     }
 
-    private PasswordEncoder passwordEncoder () {
+    @Bean
+    public PasswordEncoder passwordEncoder () {
         return new BCryptPasswordEncoder();
     }
 }
