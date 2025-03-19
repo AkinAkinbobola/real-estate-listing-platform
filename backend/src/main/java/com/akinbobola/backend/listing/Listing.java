@@ -51,4 +51,7 @@ public class Listing extends BaseEntity {
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
     private List <Viewing> viewings;
+
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    private List<ListingImage> listingImages;
 }

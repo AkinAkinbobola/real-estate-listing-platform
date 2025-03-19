@@ -4,9 +4,11 @@ import com.akinbobola.backend.common.PageResponse;
 import com.akinbobola.backend.viewing.ViewingResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,7 +53,7 @@ public class ListingController {
     }
 
     @GetMapping("/{listing-id}/viewings")
-    public ResponseEntity<PageResponse<ViewingResponse>> getViewings(
+    public ResponseEntity <PageResponse <ViewingResponse>> getViewings (
             @PathVariable(name = "listing-id") Integer listingId,
             @RequestParam(defaultValue = "0", required = false, name = "page") Integer page,
             @RequestParam(defaultValue = "10", required = false, name = "size") Integer size,
@@ -67,6 +69,16 @@ public class ListingController {
             Authentication connectedUser
     ) {
         service.deleteViewing(listingId, viewingId, connectedUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/{listing-id}/images", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity <?> saveImages (
+            @PathVariable(name = "listing-id") Integer listingId,
+            @RequestParam("images") MultipartFile[] images,
+            Authentication connectedUser
+    ) {
+        service.saveImages(listingId, images, connectedUser);
         return ResponseEntity.ok().build();
     }
 }

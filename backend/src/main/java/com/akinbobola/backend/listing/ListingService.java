@@ -4,6 +4,7 @@ import com.akinbobola.backend.address.Address;
 import com.akinbobola.backend.address.AddressRepository;
 import com.akinbobola.backend.common.PageResponse;
 import com.akinbobola.backend.exceptions.OperationNotPermittedException;
+import com.akinbobola.backend.file.FileStorageService;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.user.UserRepository;
 import com.akinbobola.backend.viewing.Viewing;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +37,8 @@ public class ListingService {
     private final AddressRepository addressRepository;
     private final ViewingMapper viewingMapper;
     private final ViewingRepository viewingRepository;
+    private final FileStorageService fileStorageService;
+    private final ListingImageRepository listingImageRepository;
 
     public Integer saveListing (ListingRequest request, Authentication connectedUser) {
         User authenticatedUser = (User) connectedUser.getPrincipal();
@@ -187,5 +191,32 @@ public class ListingService {
         }
 
         viewingRepository.delete(viewing);
+    }
+
+    public void saveImages (
+            Integer listingId,
+            MultipartFile[] images,
+            Authentication connectedUser
+    ) {
+        User user = (User) connectedUser.getPrincipal();
+
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> new EntityNotFoundException("Listing id " + listingId + " not found"));
+
+        if (!Objects.equals(listing.getAgent().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not permitted to add images to this listing");
+        }
+
+        List <String> imageUrls = fileStorageService.saveImages(listingId, images, user.getId());
+
+        imageUrls.forEach(imageUrl -> {
+            ListingImage listingImage = ListingImage.builder()
+                    .imageUrl(imageUrl)
+                    .isPrimary(false)
+                    .listing(listing)
+                    .build();
+
+            listingImageRepository.save(listingImage);
+        });
     }
 }
