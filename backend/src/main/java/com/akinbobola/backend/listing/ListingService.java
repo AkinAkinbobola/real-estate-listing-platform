@@ -264,4 +264,20 @@ public class ListingService {
             floorPlanRepository.save(floorPlan);
         });
     }
+
+    public byte[] getFloorPlan (Integer listingId, Integer floorPlanId, Authentication connectedUser) throws IOException {
+        User user = (User) connectedUser.getPrincipal();
+
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> new EntityNotFoundException("Listing id " + listingId + " not found"));
+
+        if (!Objects.equals(listing.getAgent().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not permitted to view floor plans for this listing");
+        }
+
+        FloorPlan floorPlan = floorPlanRepository.findById(floorPlanId)
+                .orElseThrow(() -> new EntityNotFoundException("Floor plan id " + floorPlanId + " not found"));
+
+        return fileReaderService.readFile(floorPlan.getPlanUrl());
+    }
 }

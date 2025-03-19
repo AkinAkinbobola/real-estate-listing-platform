@@ -115,4 +115,23 @@ public class ListingController {
         service.saveFloorPlans(listingId, floorPlans, connectedUser);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{listing-id}/floor-plans/{floor-plan-id}")
+    public ResponseEntity <byte[]> getFloorPlan (
+            @PathVariable(name = "listing-id") Integer listingId,
+            @PathVariable(name = "floor-plan-id") Integer floorPlanId,
+            Authentication connectedUser
+    ) throws IOException {
+        byte[] floorPlan = service.getFloorPlan(listingId, floorPlanId, connectedUser);
+
+        String mimeType = Files.probeContentType(fileReaderService.getFloorPath(floorPlanId));
+
+        if (mimeType == null) {
+            mimeType = MediaType.IMAGE_JPEG_VALUE;
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(mimeType))
+                .body(floorPlan);
+    }
 }

@@ -3,6 +3,7 @@ package com.akinbobola.backend.user;
 import com.akinbobola.backend.listing.Listing;
 import com.akinbobola.backend.role.Role;
 import com.akinbobola.backend.viewing.Viewing;
+import com.akinbobola.backend.viewingSchedule.ViewingSchedule;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -49,6 +50,9 @@ public class User implements UserDetails, Principal {
 
     @OneToMany(mappedBy = "agent", cascade = CascadeType.ALL)
     private List<Viewing> viewings;
+
+    @OneToMany(mappedBy = "user")
+    private List<ViewingSchedule> viewingSchedules;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List <Role> roles;
