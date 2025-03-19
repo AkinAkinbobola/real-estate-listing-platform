@@ -25,4 +25,5 @@ public class ListingResponse {
     private LocalDateTime dateListed;
     private String createdBy;
     private List <ViewingResponse> viewings;
+    private List<String> images;
 }

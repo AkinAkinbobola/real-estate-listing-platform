@@ -12,6 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ListingMapper {
     private final ViewingMapper viewingMapper;
+    private final ListingImageMapper listingImageMapper;
 
     public ListingResponse toListingResponse (Listing listing) {
         return ListingResponse.builder()
@@ -35,6 +36,11 @@ public class ListingMapper {
                 .viewings(
                         Optional.ofNullable(listing.getViewings())
                                 .map(viewingMapper::toViewingResponseList)
+                                .orElse(Collections.emptyList())
+                )
+                .images(
+                        Optional.ofNullable(listing.getListingImages())
+                                .map(listingImageMapper::toListingImageResponseList)
                                 .orElse(Collections.emptyList())
                 )
                 .dateListed(listing.getCreatedDate())
