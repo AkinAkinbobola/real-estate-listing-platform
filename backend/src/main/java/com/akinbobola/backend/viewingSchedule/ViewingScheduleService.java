@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -64,5 +65,43 @@ public class ViewingScheduleService {
                 viewingSchedules.isFirst(),
                 viewingSchedules.isLast()
         );
+    }
+
+    public Integer cancelSchedule (Integer scheduleId, Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+
+        ViewingSchedule viewingSchedule = viewingScheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new EntityNotFoundException("Viewing schedule not found"));
+
+        if (!Objects.equals(user.getId(), viewingSchedule.getUser().getId())) {
+            throw new OperationNotPermittedException("You are not permitted to cancel this schedule");
+        }
+
+        if (viewingSchedule.getStatus() == ViewingScheduleStatus.CANCELLED) {
+            throw new OperationNotPermittedException("Viewing schedule is already cancelled");
+        }
+
+        viewingSchedule.setStatus(ViewingScheduleStatus.CANCELLED);
+
+        return viewingScheduleRepository.save(viewingSchedule).getId();
+    }
+
+    public Integer confirmSchedule (Integer scheduleId, Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+
+        ViewingSchedule viewingSchedule = viewingScheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new EntityNotFoundException("Viewing schedule not found"));
+
+        if (!Objects.equals(user.getId(), viewingSchedule.getViewing().getListing().getAgent().getId())){
+            throw new OperationNotPermittedException("You are not permitted to confirm this schedule");
+        }
+
+        if (viewingSchedule.getStatus() == ViewingScheduleStatus.CONFIRMED){
+            throw new OperationNotPermittedException("Viewing schedule is already confirmed");
+        }
+
+        viewingSchedule.setStatus(ViewingScheduleStatus.CONFIRMED);
+
+        return viewingScheduleRepository.save(viewingSchedule).getId();
     }
 }
