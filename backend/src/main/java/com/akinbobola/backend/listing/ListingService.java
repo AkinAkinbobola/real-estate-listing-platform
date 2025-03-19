@@ -4,6 +4,7 @@ import com.akinbobola.backend.address.Address;
 import com.akinbobola.backend.address.AddressRepository;
 import com.akinbobola.backend.common.PageResponse;
 import com.akinbobola.backend.exceptions.OperationNotPermittedException;
+import com.akinbobola.backend.file.FileReaderService;
 import com.akinbobola.backend.file.FileStorageService;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.user.UserRepository;
@@ -23,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,6 +41,7 @@ public class ListingService {
     private final ViewingRepository viewingRepository;
     private final FileStorageService fileStorageService;
     private final ListingImageRepository listingImageRepository;
+    private final FileReaderService fileReaderService;
 
     public Integer saveListing (ListingRequest request, Authentication connectedUser) {
         User authenticatedUser = (User) connectedUser.getPrincipal();
@@ -218,5 +221,21 @@ public class ListingService {
 
             listingImageRepository.save(listingImage);
         });
+    }
+
+    public byte[] getImage (Integer listingId, Integer imageId, Authentication connectedUser) throws IOException {
+        User user = (User) connectedUser.getPrincipal();
+
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> new EntityNotFoundException("Listing id " + listingId + " not found"));
+
+        if (!Objects.equals(listing.getAgent().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not permitted to view images for this listing");
+        }
+
+        ListingImage listingImage = listingImageRepository.findById(imageId)
+                .orElseThrow(() -> new EntityNotFoundException("Image id " + imageId + " not found"));
+
+        return fileReaderService.readFile(listingImage.getImageUrl());
     }
 }

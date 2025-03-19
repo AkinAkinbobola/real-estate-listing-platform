@@ -1,6 +1,7 @@
 package com.akinbobola.backend.listing;
 
 import com.akinbobola.backend.common.PageResponse;
+import com.akinbobola.backend.file.FileReaderService;
 import com.akinbobola.backend.viewing.ViewingResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +11,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("listings")
 public class ListingController {
 
     private final ListingService service;
+    private final FileReaderService fileReaderService;
 
     @PostMapping
     public ResponseEntity <Integer> saveListing (
@@ -80,5 +85,24 @@ public class ListingController {
     ) {
         service.saveImages(listingId, images, connectedUser);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{listing-id}/images/{image-id}")
+    public ResponseEntity <byte[]> getImage (
+            @PathVariable(name = "listing-id") Integer listingId,
+            @PathVariable(name = "image-id") Integer imageId,
+            Authentication connectedUser
+    ) throws IOException {
+        byte[] image = service.getImage(listingId, imageId, connectedUser);
+
+        String mimeType = Files.probeContentType(fileReaderService.getImagePath(imageId));
+
+        if (mimeType == null) {
+            mimeType = MediaType.IMAGE_JPEG_VALUE;
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(mimeType))
+                .body(image);
     }
 }
