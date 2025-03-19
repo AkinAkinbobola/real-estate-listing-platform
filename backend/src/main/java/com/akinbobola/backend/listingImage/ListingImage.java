@@ -4,9 +4,11 @@ package com.akinbobola.backend.listingImage;
 import com.akinbobola.backend.common.BaseEntity;
 import com.akinbobola.backend.listing.Listing;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -22,6 +24,5 @@ public class ListingImage extends BaseEntity {
     private String imageUrl;
 
     @ManyToOne
-    @JoinColumn(name = "listing_id", nullable = false)
     private Listing listing;
 }
