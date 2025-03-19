@@ -26,4 +26,5 @@ public class ListingResponse {
     private String createdBy;
     private List <ViewingResponse> viewings;
     private List<String> images;
+    private List<String> floorPlans;
 }

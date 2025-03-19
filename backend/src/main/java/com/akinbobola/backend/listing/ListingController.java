@@ -105,4 +105,14 @@ public class ListingController {
                 .contentType(MediaType.parseMediaType(mimeType))
                 .body(image);
     }
+
+    @PostMapping(value = "/{listing-id}/floor-plans", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity <?> saveFloorPlans (
+            @PathVariable(name = "listing-id") Integer listingId,
+            @RequestParam("floorPlans") MultipartFile[] floorPlans,
+            Authentication connectedUser
+    ) {
+        service.saveFloorPlans(listingId, floorPlans, connectedUser);
+        return ResponseEntity.ok().build();
+    }
 }

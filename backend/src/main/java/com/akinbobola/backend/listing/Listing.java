@@ -3,6 +3,7 @@ package com.akinbobola.backend.listing;
 
 import com.akinbobola.backend.address.Address;
 import com.akinbobola.backend.common.BaseEntity;
+import com.akinbobola.backend.floorPlan.FloorPlan;
 import com.akinbobola.backend.listingImage.ListingImage;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.viewing.Viewing;
@@ -54,5 +55,8 @@ public class Listing extends BaseEntity {
     private List <Viewing> viewings;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
-    private List<ListingImage> listingImages;
+    private List <ListingImage> listingImages;
+
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    private List <FloorPlan> floorPlans;
 }

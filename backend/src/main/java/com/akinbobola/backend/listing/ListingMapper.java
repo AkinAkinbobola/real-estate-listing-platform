@@ -1,6 +1,7 @@
 package com.akinbobola.backend.listing;
 
 import com.akinbobola.backend.address.AddressResponse;
+import com.akinbobola.backend.file.FloorPlanMapper;
 import com.akinbobola.backend.listingImage.ListingImageMapper;
 import com.akinbobola.backend.viewing.ViewingMapper;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class ListingMapper {
     private final ViewingMapper viewingMapper;
     private final ListingImageMapper listingImageMapper;
+    private final FloorPlanMapper floorPlanMapper;
 
     public ListingResponse toListingResponse (Listing listing) {
         return ListingResponse.builder()
@@ -42,6 +44,11 @@ public class ListingMapper {
                 .images(
                         Optional.ofNullable(listing.getListingImages())
                                 .map(listingImageMapper::toListingImageResponseList)
+                                .orElse(Collections.emptyList())
+                )
+                .floorPlans(
+                        Optional.ofNullable(listing.getFloorPlans())
+                                .map(floorPlanMapper::toFloorPlanResponseList)
                                 .orElse(Collections.emptyList())
                 )
                 .dateListed(listing.getCreatedDate())

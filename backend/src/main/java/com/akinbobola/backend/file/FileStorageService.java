@@ -24,7 +24,7 @@ public class FileStorageService {
     private String fileUploadPath;
 
     public List <String> saveImages (Integer listingId, MultipartFile[] images, Integer userId) {
-        final String uploadSubPath = "users" + File.separator + userId + File.separator + "listings" + File.separator + listingId;
+        final String uploadSubPath = "users" + File.separator + userId + File.separator + "listings" + File.separator + "images" + File.separator + listingId;
 
         return uploadFiles(images, uploadSubPath);
     }
@@ -70,5 +70,11 @@ public class FileStorageService {
         }
 
         return fileName.substring(dotIndex + 1).toLowerCase();
+    }
+
+    public List <String> saveFloorPlans (Integer listingId, MultipartFile[] floorPlans, Integer userId) {
+        final String uploadSubPath = "users" + File.separator + userId + File.separator + "listings" + File.separator + "floor-plans" + File.separator + listingId;
+
+        return uploadFiles(floorPlans, uploadSubPath);
     }
 }

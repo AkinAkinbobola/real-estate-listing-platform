@@ -6,6 +6,8 @@ import com.akinbobola.backend.common.PageResponse;
 import com.akinbobola.backend.exceptions.OperationNotPermittedException;
 import com.akinbobola.backend.file.FileReaderService;
 import com.akinbobola.backend.file.FileStorageService;
+import com.akinbobola.backend.floorPlan.FloorPlan;
+import com.akinbobola.backend.floorPlan.FloorPlanRepository;
 import com.akinbobola.backend.listingImage.ListingImage;
 import com.akinbobola.backend.listingImage.ListingImageRepository;
 import com.akinbobola.backend.user.User;
@@ -44,6 +46,7 @@ public class ListingService {
     private final FileStorageService fileStorageService;
     private final ListingImageRepository listingImageRepository;
     private final FileReaderService fileReaderService;
+    private final FloorPlanRepository floorPlanRepository;
 
     public Integer saveListing (ListingRequest request, Authentication connectedUser) {
         User authenticatedUser = (User) connectedUser.getPrincipal();
@@ -239,5 +242,26 @@ public class ListingService {
                 .orElseThrow(() -> new EntityNotFoundException("Image id " + imageId + " not found"));
 
         return fileReaderService.readFile(listingImage.getImageUrl());
+    }
+
+    public void saveFloorPlans (Integer listingId, MultipartFile[] floorPlans, Authentication connectedUser) {
+        User user = (User) connectedUser.getPrincipal();
+
+        Listing listing = listingRepository.findById(listingId)
+                .orElseThrow(() -> new EntityNotFoundException("Listing id " + listingId + " not found"));
+
+        if (!Objects.equals(listing.getAgent().getId(), user.getId())) {
+            throw new OperationNotPermittedException("You are not permitted to add floor plans to this listing");
+        }
+
+        List <String> imageUrls = fileStorageService.saveFloorPlans(listingId, floorPlans, user.getId());
+
+        imageUrls.forEach(imageUrl -> {
+            FloorPlan floorPlan = FloorPlan.builder()
+                    .planUrl(imageUrl)
+                    .listing(listing)
+                    .build();
+            floorPlanRepository.save(floorPlan);
+        });
     }
 }
