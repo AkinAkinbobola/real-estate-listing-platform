@@ -8,10 +8,7 @@ import com.akinbobola.backend.listingImage.ListingImage;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.viewing.Viewing;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
@@ -23,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ToString
 public class Listing extends BaseEntity {
 
     private String title;
@@ -52,11 +50,14 @@ public class Listing extends BaseEntity {
     private User agent;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List <Viewing> viewings;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List <ListingImage> listingImages;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List <FloorPlan> floorPlans;
 }
