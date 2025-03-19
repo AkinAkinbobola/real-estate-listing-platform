@@ -1,7 +1,6 @@
 package com.akinbobola.backend.file;
 
-import com.akinbobola.backend.listing.ListingImage;
-import com.akinbobola.backend.listing.ListingImageRepository;
+import com.akinbobola.backend.listingImage.ListingImageRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

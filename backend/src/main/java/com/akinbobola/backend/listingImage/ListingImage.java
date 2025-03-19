@@ -1,7 +1,8 @@
-package com.akinbobola.backend.listing;
+package com.akinbobola.backend.listingImage;
 
 
 import com.akinbobola.backend.common.BaseEntity;
+import com.akinbobola.backend.listing.Listing;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

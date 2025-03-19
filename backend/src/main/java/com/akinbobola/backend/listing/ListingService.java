@@ -6,6 +6,8 @@ import com.akinbobola.backend.common.PageResponse;
 import com.akinbobola.backend.exceptions.OperationNotPermittedException;
 import com.akinbobola.backend.file.FileReaderService;
 import com.akinbobola.backend.file.FileStorageService;
+import com.akinbobola.backend.listingImage.ListingImage;
+import com.akinbobola.backend.listingImage.ListingImageRepository;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.user.UserRepository;
 import com.akinbobola.backend.viewing.Viewing;

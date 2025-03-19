@@ -1,4 +1,4 @@
-package com.akinbobola.backend.listing;
+package com.akinbobola.backend.listingImage;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

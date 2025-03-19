@@ -3,6 +3,7 @@ package com.akinbobola.backend.listing;
 
 import com.akinbobola.backend.address.Address;
 import com.akinbobola.backend.common.BaseEntity;
+import com.akinbobola.backend.listingImage.ListingImage;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.viewing.Viewing;
 import jakarta.persistence.*;

@@ -1,6 +1,7 @@
 package com.akinbobola.backend.listing;
 
 import com.akinbobola.backend.address.AddressResponse;
+import com.akinbobola.backend.listingImage.ListingImageMapper;
 import com.akinbobola.backend.viewing.ViewingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

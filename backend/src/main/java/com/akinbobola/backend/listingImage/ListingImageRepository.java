@@ -1,4 +1,4 @@
-package com.akinbobola.backend.listing;
+package com.akinbobola.backend.listingImage;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
