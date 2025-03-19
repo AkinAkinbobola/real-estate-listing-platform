@@ -1,17 +1,15 @@
 package com.akinbobola.backend.viewingSchedule;
 
+import com.akinbobola.backend.common.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("viewing-schedule")
+@RequestMapping("viewing-schedules")
 public class ViewingScheduleController {
 
     private final ViewingScheduleService service;
@@ -23,5 +21,15 @@ public class ViewingScheduleController {
             Authentication connectedUser
     ) {
         return ResponseEntity.ok(service.saveSchedule(viewingId, connectedUser));
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity <PageResponse <ViewingScheduleResponse>> getViewingSchedules (
+            @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity.ok(service.getViewingSchedules(page, size, connectedUser));
     }
 }

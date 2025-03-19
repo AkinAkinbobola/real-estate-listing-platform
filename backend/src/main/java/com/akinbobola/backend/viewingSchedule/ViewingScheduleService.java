@@ -1,13 +1,20 @@
 package com.akinbobola.backend.viewingSchedule;
 
+import com.akinbobola.backend.common.PageResponse;
 import com.akinbobola.backend.exceptions.OperationNotPermittedException;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.viewing.Viewing;
 import com.akinbobola.backend.viewing.ViewingRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +38,31 @@ public class ViewingScheduleService {
         ViewingSchedule viewingSchedule = viewingScheduleMapper.toViewingSchedule(viewing, user);
 
         return viewingScheduleRepository.save(viewingSchedule).getId();
+    }
+
+    public PageResponse <ViewingScheduleResponse> getViewingSchedules (
+            Integer page,
+            Integer size,
+            Authentication connectedUser
+    ) {
+        User user = (User) connectedUser.getPrincipal();
+
+        Pageable pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        Page <ViewingSchedule> viewingSchedules = viewingScheduleRepository.findByUser(user.getId(), pageRequest);
+
+        List <ViewingScheduleResponse> viewingScheduleResponses = viewingSchedules.stream()
+                .map(viewingScheduleMapper::toViewingScheduleResponse)
+                .toList();
+
+        return new PageResponse <>(
+                viewingScheduleResponses,
+                viewingSchedules.getNumber(),
+                viewingSchedules.getTotalPages(),
+                viewingSchedules.getTotalElements(),
+                viewingSchedules.getTotalPages(),
+                viewingSchedules.isFirst(),
+                viewingSchedules.isLast()
+        );
     }
 }

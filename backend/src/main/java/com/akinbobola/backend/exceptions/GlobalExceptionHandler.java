@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
                 status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
                         ExceptionResponse.builder()
-                                .error("An unexpected error occurred: " + ex.getMessage())
+                                .error(ex.getMessage())
                                 .build()
                 );
     }
