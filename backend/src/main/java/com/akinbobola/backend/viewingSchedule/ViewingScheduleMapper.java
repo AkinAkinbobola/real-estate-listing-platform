@@ -13,7 +13,7 @@ public class ViewingScheduleMapper {
 
     public ViewingSchedule toViewingSchedule (Viewing viewing, User user) {
         return ViewingSchedule.builder().viewing(viewing).user(user).emailSent(true)
-                .status(ViewingScheduleStatus.PENDING).build();
+                .status(ViewingScheduleStatus.SCHEDULED).build();
     }
 
     public ViewingScheduleResponse toViewingScheduleResponse (ViewingSchedule viewingSchedule) {

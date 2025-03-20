@@ -5,6 +5,7 @@ import com.akinbobola.backend.exceptions.OperationNotPermittedException;
 import com.akinbobola.backend.user.User;
 import com.akinbobola.backend.viewing.Viewing;
 import com.akinbobola.backend.viewing.ViewingRepository;
+import com.akinbobola.backend.viewing.ViewingStatus;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,11 +14,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ViewingScheduleService {
     private final ViewingRepository viewingRepository;
@@ -30,15 +33,24 @@ public class ViewingScheduleService {
         Viewing viewing = viewingRepository.findById(viewingId)
                 .orElseThrow(() -> new EntityNotFoundException("Viewing not found"));
 
-        boolean scheduleConflicting = viewingScheduleRepository.isScheduleConflicting(viewingId);
+        if (viewing.getViewingStatus() == ViewingStatus.UNAVAILABLE) {
+            throw new OperationNotPermittedException("This viewing is unavailable");
+        }
+
+        boolean scheduleConflicting = viewingScheduleRepository.isScheduleConflicting(viewingId, ViewingScheduleStatus.SCHEDULED);
 
         if (scheduleConflicting) {
             throw new OperationNotPermittedException("This viewing has already been scheduled");
         }
 
         ViewingSchedule viewingSchedule = viewingScheduleMapper.toViewingSchedule(viewing, user);
+        viewingScheduleRepository.save(viewingSchedule);
 
-        return viewingScheduleRepository.save(viewingSchedule).getId();
+        viewing.setViewingStatus(ViewingStatus.UNAVAILABLE);
+
+        viewingRepository.save(viewing);
+
+        return viewingSchedule.getId();
     }
 
     public PageResponse <ViewingScheduleResponse> getViewingSchedules (
@@ -77,32 +89,20 @@ public class ViewingScheduleService {
             throw new OperationNotPermittedException("You are not permitted to cancel this schedule");
         }
 
-        if (viewingSchedule.getStatus() == ViewingScheduleStatus.CANCELLED) {
-            throw new OperationNotPermittedException("Viewing schedule is already cancelled");
-        }
-
         viewingSchedule.setStatus(ViewingScheduleStatus.CANCELLED);
 
-        return viewingScheduleRepository.save(viewingSchedule).getId();
-    }
+        viewingScheduleRepository.save(viewingSchedule);
 
-    public Integer confirmSchedule (Integer scheduleId, Authentication connectedUser) {
-        User user = (User) connectedUser.getPrincipal();
+        Viewing viewing = viewingSchedule.getViewing();
 
-        ViewingSchedule viewingSchedule = viewingScheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new EntityNotFoundException("Viewing schedule not found"));
+        boolean hasActiveSchedules = viewingScheduleRepository.hasActiveSchedules(viewing.getId(), ViewingScheduleStatus.SCHEDULED);
 
-        if (!Objects.equals(user.getId(), viewingSchedule.getViewing().getListing().getAgent().getId())) {
-            throw new OperationNotPermittedException("You are not permitted to confirm this schedule");
+        if (!hasActiveSchedules) {
+            viewing.setViewingStatus(ViewingStatus.AVAILABLE);
+            viewingRepository.save(viewing);
         }
 
-        if (viewingSchedule.getStatus() == ViewingScheduleStatus.CONFIRMED) {
-            throw new OperationNotPermittedException("Viewing schedule is already confirmed");
-        }
-
-        viewingSchedule.setStatus(ViewingScheduleStatus.CONFIRMED);
-
-        return viewingScheduleRepository.save(viewingSchedule).getId();
+        return viewingSchedule.getId();
     }
 
     public PageResponse <ViewingScheduleResponse> getAgentViewingSchedules (
@@ -120,7 +120,7 @@ public class ViewingScheduleService {
                 .map(viewingScheduleMapper::toViewingScheduleResponse)
                 .toList();
 
-        return new PageResponse<>(
+        return new PageResponse <>(
                 viewingScheduleResponses,
                 viewingSchedules.getNumber(),
                 viewingSchedules.getTotalPages(),

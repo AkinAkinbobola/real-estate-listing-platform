@@ -32,6 +32,8 @@ public class Viewing extends BaseEntity {
 
     private LocalTime endTime;
 
+    private ViewingStatus viewingStatus;
+
     @ManyToOne
     @JoinColumn(name = "listing_id", nullable = false)
     private Listing listing;

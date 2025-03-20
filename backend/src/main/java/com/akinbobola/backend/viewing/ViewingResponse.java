@@ -13,4 +13,5 @@ public class ViewingResponse {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
+    private ViewingStatus status;
 }

@@ -23,6 +23,7 @@ public class ViewingMapper {
                 .date(viewing.getDate())
                 .startTime(viewing.getStartTime())
                 .endTime(viewing.getEndTime())
+                .status(viewing.getViewingStatus())
                 .build();
     }
 

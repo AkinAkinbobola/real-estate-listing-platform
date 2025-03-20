@@ -8,11 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 public interface ViewingScheduleRepository extends JpaRepository <ViewingSchedule, Integer> {
 
     @Query("""
-            select count (v) > 0
+            select count(v) > 0
             from ViewingSchedule v
             where v.viewing.id = :viewingId
+            and v.status = :status
             """)
-    boolean isScheduleConflicting (Integer viewingId);
+    boolean isScheduleConflicting (Integer viewingId, ViewingScheduleStatus status);
 
     @Query("""
             select v
@@ -27,4 +28,12 @@ public interface ViewingScheduleRepository extends JpaRepository <ViewingSchedul
             where v.viewing.listing.agent.id = :userId
             """)
     Page <ViewingSchedule> findByAgent (Integer userId, Pageable pageRequest);
+
+    @Query("""
+                        select count(v) > 0
+                        from ViewingSchedule v
+                        where v.viewing.id = :viewingId
+                        and v.status = :viewingScheduleStatus
+            """)
+    boolean hasActiveSchedules (Integer viewingId, ViewingScheduleStatus viewingScheduleStatus);
 }

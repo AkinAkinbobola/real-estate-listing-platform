@@ -42,15 +42,6 @@ public class ViewingScheduleController {
         return ResponseEntity.ok(service.cancelSchedule(scheduleId, connectedUser));
     }
 
-    @PatchMapping("/confirm/{schedule-id}")
-    @PreAuthorize("hasAuthority('AGENT')")
-    public ResponseEntity<Integer> confirmViewingSchedule (
-            @PathVariable(name = "schedule-id") Integer scheduleId,
-            Authentication connectedUser
-    ) {
-        return ResponseEntity.ok(service.confirmSchedule(scheduleId, connectedUser));
-    }
-
     @GetMapping("/agent")
     @PreAuthorize("hasAuthority('AGENT')")
     public ResponseEntity <PageResponse <ViewingScheduleResponse>> getAgentViewingSchedules (
