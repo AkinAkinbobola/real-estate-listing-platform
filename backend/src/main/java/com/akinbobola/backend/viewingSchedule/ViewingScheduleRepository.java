@@ -19,5 +19,12 @@ public interface ViewingScheduleRepository extends JpaRepository <ViewingSchedul
             from ViewingSchedule v
             where v.user.id = :userId
             """)
-    Page<ViewingSchedule> findByUser (Integer userId, Pageable pageRequest);
+    Page <ViewingSchedule> findByUser (Integer userId, Pageable pageRequest);
+
+    @Query("""
+            select v
+            from ViewingSchedule v
+            where v.viewing.listing.agent.id = :userId
+            """)
+    Page <ViewingSchedule> findByAgent (Integer userId, Pageable pageRequest);
 }

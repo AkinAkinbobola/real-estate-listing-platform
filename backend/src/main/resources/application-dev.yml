@@ -38,9 +38,3 @@ application:
   file:
     uploads:
       photos-output-path: ./backend/src/main/resources/static/uploads
-
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG

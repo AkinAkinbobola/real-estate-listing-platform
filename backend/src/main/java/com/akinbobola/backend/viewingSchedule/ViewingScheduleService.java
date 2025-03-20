@@ -92,16 +92,42 @@ public class ViewingScheduleService {
         ViewingSchedule viewingSchedule = viewingScheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new EntityNotFoundException("Viewing schedule not found"));
 
-        if (!Objects.equals(user.getId(), viewingSchedule.getViewing().getListing().getAgent().getId())){
+        if (!Objects.equals(user.getId(), viewingSchedule.getViewing().getListing().getAgent().getId())) {
             throw new OperationNotPermittedException("You are not permitted to confirm this schedule");
         }
 
-        if (viewingSchedule.getStatus() == ViewingScheduleStatus.CONFIRMED){
+        if (viewingSchedule.getStatus() == ViewingScheduleStatus.CONFIRMED) {
             throw new OperationNotPermittedException("Viewing schedule is already confirmed");
         }
 
         viewingSchedule.setStatus(ViewingScheduleStatus.CONFIRMED);
 
         return viewingScheduleRepository.save(viewingSchedule).getId();
+    }
+
+    public PageResponse <ViewingScheduleResponse> getAgentViewingSchedules (
+            Integer page,
+            Integer size,
+            Authentication connectedUser
+    ) {
+        User user = (User) connectedUser.getPrincipal();
+
+        Pageable pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        Page <ViewingSchedule> viewingSchedules = viewingScheduleRepository.findByAgent(user.getId(), pageRequest);
+
+        List <ViewingScheduleResponse> viewingScheduleResponses = viewingSchedules.stream()
+                .map(viewingScheduleMapper::toViewingScheduleResponse)
+                .toList();
+
+        return new PageResponse<>(
+                viewingScheduleResponses,
+                viewingSchedules.getNumber(),
+                viewingSchedules.getTotalPages(),
+                viewingSchedules.getTotalElements(),
+                viewingSchedules.getTotalPages(),
+                viewingSchedules.isFirst(),
+                viewingSchedules.isLast()
+        );
     }
 }

@@ -50,4 +50,14 @@ public class ViewingScheduleController {
     ) {
         return ResponseEntity.ok(service.confirmSchedule(scheduleId, connectedUser));
     }
+
+    @GetMapping("/agent")
+    @PreAuthorize("hasAuthority('AGENT')")
+    public ResponseEntity <PageResponse <ViewingScheduleResponse>> getAgentViewingSchedules (
+            @RequestParam(name = "page", defaultValue = "0", required = false) Integer page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) Integer size,
+            Authentication connectedUser
+    ) {
+        return ResponseEntity.ok(service.getAgentViewingSchedules(page, size, connectedUser));
+    }
 }
