@@ -2,6 +2,7 @@ import type {Route} from "../+types/root";
 import Navbar from "@/components/shared/Navbar";
 import Hero from "@/components/shared/Hero";
 import HowItWorks from "@/components/shared/HowItWorks";
+import JoinOurCommunity from "@/components/shared/JoinOurCommunity";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -24,6 +25,10 @@ const LandingPage = () => {
 
             <div className={"bg-dark-white px-5 py-10"}>
                 <HowItWorks/>
+            </div>
+
+            <div className={"px-5 pt-10 pb-20"}>
+                <JoinOurCommunity/>
             </div>
         </main>
     );

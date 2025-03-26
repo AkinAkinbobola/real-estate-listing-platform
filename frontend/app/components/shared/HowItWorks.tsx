@@ -16,7 +16,7 @@ const cardInfo = [
     {
         imageUrl: "/how-it-works-3.png",
         cardTitle: "Secure",
-        description: "Connect with verified real estate professionals who guide you through every transaction step. Receive personalized support for offer preparation, negotiations, and closing. Make confident, informed decisions with our comprehensive market tools.",
+        description: "Connect with verified real estate professionals who guide you through every transaction step. Receive personalized support for offer preparation, negotiations, and closing.",
         buttonText: "Get Started"
     },
 ]

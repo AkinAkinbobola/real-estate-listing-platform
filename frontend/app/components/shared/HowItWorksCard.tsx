@@ -12,13 +12,13 @@ const HowItWorksCard = ({
                             buttonText
                         }: HowItWorksCardProps) => {
     return (
-        <div className={"rounded-[8.6px] bg-white w-[407.4px]"}>
-            <img src={imageUrl} alt={"How it works images"}/>
+        <div className={"rounded-[8.6px] bg-white  w-full md:w-[407.4px]"}>
+            <img src={imageUrl} alt={"How it works images"} className={"object-cover w-full"}/>
 
             <div className={"flex flex-col text-center py-4 px-6 gap-2"}>
                 <h1 className={"font-semibold text-2xl"}>{cardTitle}</h1>
 
-                <p className={"font-light"}>
+                <p className={"font-light text-sm"}>
                     {description}
                 </p>
 
