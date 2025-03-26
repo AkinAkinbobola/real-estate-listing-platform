@@ -4,6 +4,7 @@ import Hero from "@/components/shared/Hero";
 import HowItWorks from "@/components/shared/HowItWorks";
 import JoinOurCommunity from "@/components/shared/JoinOurCommunity";
 import Subscription from "@/components/shared/Subscription";
+import Footer from "@/components/shared/Footer";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -34,6 +35,10 @@ const LandingPage = () => {
 
             <div className={"px-5 py-10"}>
                 <Subscription/>
+            </div>
+
+            <div className={"px-5 py-10"}>
+                <Footer/>
             </div>
         </main>
     );
