@@ -14,8 +14,8 @@ export function meta({}: Route.MetaArgs) {
 
 const LandingPage = () => {
     return (
-        <main className={"py-10"}>
-            <div className={"px-[80px] space-y-40"}>
+        <main className={"py-5 lg:py-10"}>
+            <div className={"px-5 space-y-4 md:space-y-8 2xl:space-y-52"}>
                 <Navbar/>
 
                 <Hero/>
