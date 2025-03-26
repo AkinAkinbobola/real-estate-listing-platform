@@ -11,7 +11,8 @@
 @theme{
     --color-dark-blue: #1F3D57;
     --color-light-blue: #5386B5;
-    --color-off-white: #FAF8F7
+    --color-off-white: #FAF8F7;
+    --color-dark-white: #F2F2F2
 }
 
 html,
