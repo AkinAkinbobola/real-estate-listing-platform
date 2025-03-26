@@ -1,4 +1,5 @@
 import type {Route} from "../+types/root";
+import Navbar from "@/components/shared/Navbar";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -12,9 +13,9 @@ export function meta({}: Route.MetaArgs) {
 
 const LandingPage = () => {
     return (
-        <div>
-            LandingPage
-        </div>
+        <main className={"container py-10"}>
+            <Navbar/>
+        </main>
     );
 };
 
